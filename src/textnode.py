@@ -1,7 +1,8 @@
 from enum import Enum
 
 class TextType(Enum):
-    NORMAL= "normal_text"
+
+    TEXT= "normal_text"
     BOLD = "bold_text"
     ITALIC = "italic_text"
     CODE = "code_text"
@@ -21,9 +22,3 @@ class TextNode:
         return f'TextNode({self.text}, {self.text_type.value}, {self.url})'
     
 
-    # Normal text
-    # **Bold text**
-    # _Italic text_
-    # `Code text`
-    # Links, in this format: [anchor text](url)
-    # Images, in this format: ![alt text](url)
