@@ -1,1 +1,2 @@
-Cool
+This is simple tool that represents HTML elements as python objects which can be converted into HTML. 
+This is part of the boot.dev static site generate guided project
