@@ -108,9 +108,9 @@ def split_nodes_link(old_nodes:List[TextNode]):
 def split_nodes_image(old_nodes:List[TextNode]):
     regex_string = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
     res = []
-    print("start image")
-    printlist(old_nodes) 
-    print("end image")
+    # print("start image")
+    # printlist(old_nodes) 
+    # print("end image")
     for node in old_nodes:
         text = node.text
         # text_links_tuple = extract_markdown_links(text)
@@ -160,3 +160,13 @@ def text_to_textnodes(text):
     # printlist(curr_nodes)
     curr_nodes = split_nodes_link(curr_nodes)
     return curr_nodes
+
+def markdown_to_blocks(markdown):
+    # res = []
+    markdown = markdown.strip()
+    splitted = markdown.split("\n\n")
+    res = [string for string in splitted if string ]
+    # printlist(res)
+    # print(res)
+    # print(f"length: {len(res)}")
+    return res
