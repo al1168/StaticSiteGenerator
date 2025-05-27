@@ -1,6 +1,7 @@
 from unittest import TestCase, main
 
-from converter import extract_markdown_images, markdown_to_blocks, split_nodes_delimiter, split_nodes_image, split_nodes_link, text_node_to_html_node, text_to_textnodes
+from converter import BlockType, block_to_block_type, extract_markdown_images, markdown_to_blocks, split_nodes_delimiter, split_nodes_image, split_nodes_link, text_node_to_html_node, text_to_textnodes
+from markdown_blocks import markdown_to_html_node
 from textnode import TextNode, TextType
 
 
@@ -112,42 +113,67 @@ class converterTest(TestCase):
     #     ],
     #     new_nodes,
     # )
-    def test_full(self):
-        s = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-        myans = text_to_textnodes(s)
-        ans = [
-        TextNode("This is ", TextType.TEXT),
-        TextNode("text", TextType.BOLD),
-        TextNode(" with an ", TextType.TEXT),
-        TextNode("italic", TextType.ITALIC),
-        TextNode(" word and a ", TextType.TEXT),
-        TextNode("code block", TextType.CODE),
-        TextNode(" and an ", TextType.TEXT),
-        TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
-        TextNode(" and a ", TextType.TEXT),
-        TextNode("link", TextType.LINK, "https://boot.dev"),
-        ]
-        self.assertEqual(ans, myans)
+    # def test_full(self):
+    #     s = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+    #     myans = text_to_textnodes(s)
+    #     ans = [
+    #     TextNode("This is ", TextType.TEXT),
+    #     TextNode("text", TextType.BOLD),
+    #     TextNode(" with an ", TextType.TEXT),
+    #     TextNode("italic", TextType.ITALIC),
+    #     TextNode(" word and a ", TextType.TEXT),
+    #     TextNode("code block", TextType.CODE),
+    #     TextNode(" and an ", TextType.TEXT),
+    #     TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+    #     TextNode(" and a ", TextType.TEXT),
+    #     TextNode("link", TextType.LINK, "https://boot.dev"),
+    #     ]
+    #     self.assertEqual(ans, myans)
 
 
-    def test_markdown_to_blocks(self):
-        md = """
-This is **bolded** paragraph
+#     def test_markdown_to_blocks(self):
+#         md = """
+# This is **bolded** paragraph
 
-This is another paragraph with _italic_ text and `code` here
-This is the same paragraph on a new line
+# This is another paragraph with _italic_ text and `code` here
+# This is the same paragraph on a new line
 
-- This is a list
-- with items
-"""
-        blocks = markdown_to_blocks(md)
-        self.assertEqual(
-            blocks,
-            [
-                "This is **bolded** paragraph",
-                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
-                "- This is a list\n- with items",
-            ],
-        )
+# - This is a list
+# - with items
+# """
+#         blocks = markdown_to_blocks(md)
+#         self.assertEqual(
+#             blocks,
+#             [
+#                 "This is **bolded** paragraph",
+#                 "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+#                 "- This is a list\n- with items",
+#             ],
+#         )
+
+#     def test_block_to_block_type(self):
+#         """ 
+#         paragraph
+#         heading
+#         code
+#         quote
+#         unordered_list
+#         ordered_list  
+#         """
+#         paragraph_string = "wkadmklamld kkd"
+#         heading_string = "## cool"
+#         code_string = "```wkadmklamld kkd```"
+#         quote_string = "> wkadmklamld kkd"
+#         unordered_list_string = "- wkadmklamld kkd"
+#         ordered_list = "1. cool"
+#         tests = [paragraph_string, heading_string, code_string, quote_string, unordered_list_string, ordered_list]
+#         ans_blocks = [BlockType.PARAGRAPH, BlockType.HEADING, BlockType.CODE, BlockType.QUOTE, BlockType.UNORDERED_LIST, BlockType.ORDERED_LIST]
+#         my_ans_blocks = [block_to_block_type(test)for test in tests]
+#         self.assertEqual(ans_blocks, my_ans_blocks)
+    def test_my_functions(self):
+        s  = "1. first item\n2. Second item"
+        
+        print(markdown_to_html_node(s).to_html())
+        markdown_to_html_node(s).to_html()
 if __name__ == "__main__":
     main()

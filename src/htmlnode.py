@@ -33,10 +33,11 @@ class ParentNode(HTMLNode):
         if not self.children: 
             raise ValueError("Must have children in Parent Node")
         inner = []
-
+        # print(f"all children {self.children}")
         for child in self.children:
             inner.append(child.to_html())
         inner_string = "".join(inner) 
+        # print(f"This is joined_innerstring:\n {inner_string}\n end")
         if self.props:
             return f'<{self.tag} {self.props_to_html()}>{inner_string}</{self.tag}>'
         else:

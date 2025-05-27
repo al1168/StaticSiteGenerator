@@ -4,6 +4,15 @@ from textnode import TextNode, TextType
 import re
 # from htmlnode import
 from leafnode import LeafNode
+from enum import Enum
+class BlockType(Enum):
+    PARAGRAPH = "paragraph",
+    HEADING = "heading",
+    CODE = "code",
+    QUOTE = "quote",
+    UNORDERED_LIST = "unordered_list",
+    ORDERED_LIST ="ordered_list"
+
 def text_node_to_html_node(text_node: TextNode):
     if text_node.text_type == TextType.TEXT:
         return LeafNode(None,text_node.text,None,None)
@@ -28,6 +37,8 @@ def split_nodes_delimiter(old_nodes: List[TextNode], delimiter, text_type)->List
             continue
         split_nodes = [] # stores the nodes we split
         sections = old_node.text.split(delimiter)
+        if len(sections) % 2 == 0:
+            raise ValueError("invalid markdown, formatted section not closed")
         for i in range(len(sections)):
             value = sections[i] 
             if value == "":
@@ -161,12 +172,71 @@ def text_to_textnodes(text):
     curr_nodes = split_nodes_link(curr_nodes)
     return curr_nodes
 
-def markdown_to_blocks(markdown):
+def markdown_to_blocks(markdown:str) -> List[str]:
     # res = []
     markdown = markdown.strip()
     splitted = markdown.split("\n\n")
     res = [string for string in splitted if string ]
-    # printlist(res)
-    # print(res)
-    # print(f"length: {len(res)}")
     return res
+
+def block_to_block_type(block_string: str):
+    # check 
+    if block_string == "":
+        return BlockType.PARAGRAPH
+    
+#     Headings start with 1-6 # characters, followed by a space and then the heading text.
+    if block_string[0] == "#":
+        return BlockType.HEADING
+
+    # Code blocks must start with 3 backticks and end with 3 backticks.
+    if len(block_string) >= 6 and block_string[:3] == "```" and block_string[len(block_string)-3 : len(block_string)] == "```":
+        return BlockType.CODE
+    # Every line in a quote block must start with a > character.
+    if block_string[0] == ">":
+        return BlockType.QUOTE
+    # Every line in an unordered list block must start with a - character, followed by a space.
+    if len(block_string) >= 2 and block_string[:2] == "- ":
+        return BlockType.UNORDERED_LIST
+    # Every line in an ordered list block must start with a number followed by a . character and a space. The number must start at 1 and increment by 1 for each line.
+    if len(block_string) >= 2 and block_string[0].isnumeric() and block_string[1] == "." and block_string[2] == " ": 
+        return BlockType.ORDERED_LIST
+    # If none of the above conditions are met, the block is a normal paragraph.
+    return BlockType.PARAGRAPH
+
+def strip_heading_prefix(string : str):
+    num_hash_tags = 0
+    i = 0
+    while i < len(string) and string[i] == '#':
+        i += 1
+        num_hash_tags  += 1
+    return (num_hash_tags, string[i+1:])
+
+def strip_code_prefix(string:str):
+    return string[3:len(string)-3]
+
+def create_nested_quote_nodes(string:str):
+   pass 
+
+    
+def markdown_to_html_node(markdown):
+    # any markdown 
+    blocks = markdown_to_blocks(markdown)
+    blockType_blocks_tuple = [(block, block_to_block_type(block)) for block in blocks]
+    nodes = []
+    if len(blockType_blocks_tuple) == 1 and blockType_blocks_tuple[0][1] == BlockType.PARAGRAPH:
+        
+        return 
+    for block, block_type in blockType_blocks_tuple:
+        if block_type == BlockType.PARAGRAPH:
+            nodes.append(LeafNode("p", block, None, None))
+        elif block_type == BlockType.HEADING:
+            heading_size, adjusted_string = strip_heading_prefix(block)
+            new_node = LeafNode(f'h{heading_size}',adjusted_string)
+            nodes.append(new_node)
+        elif block_type == BlockType.CODE:
+            adjusted_string = strip_code_prefix(block)
+            new_node = LeafNode("code",adjusted_string)
+            nodes.append(new_node) 
+        elif block_type == BlockType.QUOTE:
+            # recurse
+            pass
