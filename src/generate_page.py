@@ -9,7 +9,7 @@ def extract_title(markdown: str):
     return heading_text
 
 
-def generate_html_page(from_path, template_path, dest_path):
+def generate_html_page(from_path, template_path, dest_path, basepath):
     dest_path = dest_path.replace(".md", ".html")
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open (from_path) as file:
@@ -23,6 +23,9 @@ def generate_html_page(from_path, template_path, dest_path):
     html_string = html_node.to_html()
     final_html = template_content.replace("{{ Content }}", html_string)
     final_html = final_html.replace("{{ Title }}",title)
+    final_html = final_html.replace('href=\"/', f'href="{basepath}') 
+    final_html = final_html.replace('src=\"/', f'src="{basepath}') 
+
     a = dest_path.split("/")[:-1]
     curr = ""
     for part in a:
@@ -31,9 +34,8 @@ def generate_html_page(from_path, template_path, dest_path):
             os.mkdir(curr)
     with open(dest_path, "w") as file:
         file.write(final_html)
-# generate_page("content/index.md", "template.html", "outer/inner/inner2/final.html")
 
-def generate_page_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_page_recursive(dir_path_content, template_path, dest_dir_path, basepath = "/"):
 
     items = os.listdir(dir_path_content)
     SRC_BASE_FOLDER = dir_path_content
@@ -42,8 +44,8 @@ def generate_page_recursive(dir_path_content, template_path, dest_dir_path):
         src_curr_item_path = os.path.join(SRC_BASE_FOLDER, item)
         dest_curr_item_path = os.path.join(DEST_BASE_FOLDER,item)
         if os.path.isfile(src_curr_item_path):
-            generate_html_page(src_curr_item_path, template_path, dest_curr_item_path)
+            generate_html_page(src_curr_item_path, template_path, dest_curr_item_path,basepath)
         elif os.path.isdir(src_curr_item_path):
-            generate_page_recursive(src_curr_item_path, template_path, dest_curr_item_path)
+            generate_page_recursive(src_curr_item_path, template_path, dest_curr_item_path,basepath)
     
         

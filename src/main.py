@@ -1,11 +1,9 @@
-# import generate_page
 from generate_page import generate_page_recursive, generate_html_page
 from generate_public import copy_static_files_to_public
-# from textnode import TextNode, TextType
+import sys
 def main():
-    # generate_page()
+    BASEPATH = sys.argv[1] if len(sys.argv) >= 2 else "/"
     copy_static_files_to_public()
     # generate_html_page("content/index.md", "template.html","public/index.html")
-    # a = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    generate_page_recursive("content","template.html", "public")
+    generate_page_recursive("content","template.html", "docs", BASEPATH)
 main()
