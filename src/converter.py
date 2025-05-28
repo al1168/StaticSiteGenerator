@@ -23,7 +23,8 @@ def text_node_to_html_node(text_node: TextNode):
     elif text_node.text_type == TextType.CODE:
         return LeafNode("code",text_node.text,None,None)
     elif text_node.text_type == TextType.LINK:
-        return LeafNode("a",text_node.text,None,None)
+        props = {"href" : text_node.url}
+        return LeafNode("a",text_node.text,None, props)
     elif text_node.text_type == TextType.IMAGE:
         return LeafNode("img",text_node.text,None,None)
     else:
@@ -101,6 +102,7 @@ def split_nodes_link(old_nodes:List[TextNode]):
                 # part of node _link
             linked_string = text[span_start:span_end]
             text_value, link_value = seperate_text_and_link(linked_string)
+            # print(text_value, link_value)
             link_text_node = TextNode(text_value, TextType.LINK,link_value)
             res.append(link_text_node)
             starting = span_end
@@ -148,6 +150,7 @@ def split_nodes_image(old_nodes:List[TextNode]):
             linked_string = text[span_start:span_end]
             text_value, link_value = seperate_text_and_link(linked_string)
             link_text_node = TextNode(text_value, TextType.IMAGE, link_value)
+            # print(link_text_node.url)
             res.append(link_text_node)
             starting = span_end
         if starting != len(text):
@@ -164,12 +167,12 @@ def text_to_textnodes(text):
         "_" : TextType.ITALIC,
     }
     curr_nodes = [TextNode(text,TextType.TEXT)]
+    curr_nodes = split_nodes_link(curr_nodes)
+    curr_nodes = split_nodes_image(curr_nodes)
     for key, value in delmiter_to_type.items():
         curr_nodes = split_nodes_delimiter(curr_nodes,key,value)
         # print(f"text_type: {value}, curr_nodes: {curr_nodes}")
-    curr_nodes = split_nodes_image(curr_nodes)
     # printlist(curr_nodes)
-    curr_nodes = split_nodes_link(curr_nodes)
     return curr_nodes
 
 def markdown_to_blocks(markdown:str) -> List[str]:
