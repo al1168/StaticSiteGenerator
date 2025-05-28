@@ -12,7 +12,8 @@ class LeafNode(HTMLNode):
             raise ValueError("Leaf Node Must Have Value")
         if self.tag == None:
             return str(self.value)
-        
+        elif self.tag == "img":
+            return f'<{self.tag} {self.props_to_html()}>{self.value}>'
         elif self.props:
             return f'<{self.tag} {self.props_to_html()}>{self.value}</{self.tag}>'
         else: 

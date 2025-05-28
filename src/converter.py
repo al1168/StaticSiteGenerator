@@ -26,6 +26,7 @@ def text_node_to_html_node(text_node: TextNode):
         props = {"href" : text_node.url}
         return LeafNode("a",text_node.text,None, props)
     elif text_node.text_type == TextType.IMAGE:
+        props = {"src" : text_node.url}
         return LeafNode("img",text_node.text,None,None)
     else:
         raise NotImplementedError(f"Did not implement for {text_node}")
