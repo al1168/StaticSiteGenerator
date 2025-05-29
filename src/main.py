@@ -3,6 +3,7 @@ from generate_public import copy_static_files_to_public
 import sys
 def main():
     BASEPATH = sys.argv[1] if len(sys.argv) >= 2 else "/"
+    print(BASEPATH)
     copy_static_files_to_public()
     # generate_html_page("content/index.md", "template.html","public/index.html")
     generate_page_recursive("content","template.html", "docs", BASEPATH)
