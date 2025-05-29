@@ -8,8 +8,8 @@
 import os
 import shutil
 
-def copy_static_files_to_public():
-    PUBLIC_STRING = "public"
+def copy_static_files_to_public(static_path, destination):
+    PUBLIC_STRING = destination
     STATIC_STRING = "static"
     def recursive_copy_file(src_path):
         public_path = os.path.join(PUBLIC_STRING, src_path)
@@ -29,11 +29,11 @@ def copy_static_files_to_public():
                         os.mkdir(joined_public_path)
                         recursive_copy_file(os.path.join(src_path, item))
                     
-    if os.path.exists("public"):
-        shutil.rmtree("public")
+    if os.path.exists(destination):
+        shutil.rmtree(destination)
     src_path = "static"
-    if not os.path.exists("public"):
-        os.mkdir("public")
+    if not os.path.exists(destination):
+        os.mkdir(destination)
     items = os.listdir(src_path)
     for item in items: 
         public_path = os.path.join(PUBLIC_STRING, item)
@@ -47,4 +47,4 @@ def copy_static_files_to_public():
                 recursive_copy_file(item)
             
     
-copy_static_files_to_public()
+# copy_static_files_to_public()
